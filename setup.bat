@@ -156,6 +156,7 @@ if not exist .env (
         REM .env.exampleが存在しない場合は新規作成
         (
             echo # WordPress Docker 環境変数設定
+            echo COMPOSE_PROJECT_NAME=%PROJECT_NAME%
             echo WORDPRESS_PORT=%WP_PORT%
             echo PHPMYADMIN_PORT=%PMA_PORT%
             echo WORDPRESS_DB_HOST=db
@@ -176,7 +177,7 @@ if not exist .env (
 
 REM .envファイルの更新（PowerShellを使用）
 if exist .env (
-    powershell -Command "$content = Get-Content .env; $content = $content -replace '^WORDPRESS_PORT=.*', 'WORDPRESS_PORT=%WP_PORT%'; $content = $content -replace '^PHPMYADMIN_PORT=.*', 'PHPMYADMIN_PORT=%PMA_PORT%'; $content = $content -replace '^DB_VOLUME_NAME=.*', 'DB_VOLUME_NAME=%PROJECT_NAME%_db_data_%ENV_NAME%'; Set-Content .env $content"
+    powershell -Command "$content = Get-Content .env; $content = $content -replace '^COMPOSE_PROJECT_NAME=.*', 'COMPOSE_PROJECT_NAME=%PROJECT_NAME%'; $content = $content -replace '^WORDPRESS_PORT=.*', 'WORDPRESS_PORT=%WP_PORT%'; $content = $content -replace '^PHPMYADMIN_PORT=.*', 'PHPMYADMIN_PORT=%PMA_PORT%'; $content = $content -replace '^DB_VOLUME_NAME=.*', 'DB_VOLUME_NAME=%PROJECT_NAME%_db_data_%ENV_NAME%'; Set-Content .env $content"
     echo .envファイルを更新しました。
 ) else (
     echo エラー: .envファイルの作成に失敗しました。

@@ -133,6 +133,7 @@ if [ ! -f .env ]; then
         # .env.exampleが存在しない場合は新規作成
         cat > .env << EOF
 # WordPress Docker 環境変数設定
+COMPOSE_PROJECT_NAME=$PROJECT_NAME
 WORDPRESS_PORT=$WP_PORT
 PHPMYADMIN_PORT=$PMA_PORT
 WORDPRESS_DB_HOST=db
@@ -156,11 +157,13 @@ if [ -f .env ]; then
     # sedコマンドの互換性を考慮（macOSとLinuxの両方に対応）
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOSの場合
+        sed -i '' "s/^COMPOSE_PROJECT_NAME=.*/COMPOSE_PROJECT_NAME=$PROJECT_NAME/" .env
         sed -i '' "s/^WORDPRESS_PORT=.*/WORDPRESS_PORT=$WP_PORT/" .env
         sed -i '' "s/^PHPMYADMIN_PORT=.*/PHPMYADMIN_PORT=$PMA_PORT/" .env
         sed -i '' "s/^DB_VOLUME_NAME=.*/DB_VOLUME_NAME=${PROJECT_NAME}_db_data_$ENV_NAME/" .env
     else
         # Linuxの場合
+        sed -i.bak "s/^COMPOSE_PROJECT_NAME=.*/COMPOSE_PROJECT_NAME=$PROJECT_NAME/" .env
         sed -i.bak "s/^WORDPRESS_PORT=.*/WORDPRESS_PORT=$WP_PORT/" .env
         sed -i.bak "s/^PHPMYADMIN_PORT=.*/PHPMYADMIN_PORT=$PMA_PORT/" .env
         sed -i.bak "s/^DB_VOLUME_NAME=.*/DB_VOLUME_NAME=${PROJECT_NAME}_db_data_$ENV_NAME/" .env
