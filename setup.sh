@@ -7,12 +7,30 @@ echo "WordPress Docker テンプレート セットアップ"
 echo "=========================================="
 echo ""
 
-# プロジェクト名の入力
-read -p "プロジェクト名を入力してください（例: my-wordpress-site）: " PROJECT_NAME
+# 現在のディレクトリ名を取得
+CURRENT_DIR=$(basename "$PWD")
 
+# プロジェクト名の入力
+read -p "プロジェクト名を入力してください（現在: $CURRENT_DIR、Enterで現在の名前を使用）: " PROJECT_NAME
+
+# プロジェクト名が空の場合は現在のディレクトリ名を使用
 if [ -z "$PROJECT_NAME" ]; then
-    echo "エラー: プロジェクト名が入力されていません。"
-    exit 1
+    PROJECT_NAME="$CURRENT_DIR"
+    echo "プロジェクト名を現在のディレクトリ名（$PROJECT_NAME）に設定しました。"
+fi
+
+# フォルダ名をプロジェクト名に変更（現在の名前と異なる場合）
+if [ "$CURRENT_DIR" != "$PROJECT_NAME" ]; then
+    echo ""
+    echo "フォルダ名を '$CURRENT_DIR' から '$PROJECT_NAME' に変更します..."
+    cd ..
+    if [ -d "$PROJECT_NAME" ]; then
+        echo "エラー: '$PROJECT_NAME' という名前のフォルダが既に存在します。"
+        exit 1
+    fi
+    mv "$CURRENT_DIR" "$PROJECT_NAME"
+    cd "$PROJECT_NAME"
+    echo "フォルダ名を変更しました。"
 fi
 
 # 環境名の選択

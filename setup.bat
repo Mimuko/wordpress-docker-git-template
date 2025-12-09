@@ -6,12 +6,30 @@ echo WordPress Docker テンプレート セットアップ
 echo ==========================================
 echo.
 
-REM プロジェクト名の入力
-set /p PROJECT_NAME="プロジェクト名を入力してください（例: my-wordpress-site）: "
+REM 現在のディレクトリ名を取得
+for %%I in (.) do set CURRENT_DIR=%%~nxI
 
+REM プロジェクト名の入力
+set /p PROJECT_NAME="プロジェクト名を入力してください（現在: %CURRENT_DIR%、Enterで現在の名前を使用）: "
+
+REM プロジェクト名が空の場合は現在のディレクトリ名を使用
 if "%PROJECT_NAME%"=="" (
-    echo エラー: プロジェクト名が入力されていません。
-    exit /b 1
+    set PROJECT_NAME=%CURRENT_DIR%
+    echo プロジェクト名を現在のディレクトリ名（!PROJECT_NAME!）に設定しました。
+)
+
+REM フォルダ名をプロジェクト名に変更（現在の名前と異なる場合）
+if not "%CURRENT_DIR%"=="%PROJECT_NAME%" (
+    echo.
+    echo フォルダ名を '%CURRENT_DIR%' から '%PROJECT_NAME%' に変更します...
+    cd ..
+    if exist "%PROJECT_NAME%" (
+        echo エラー: '%PROJECT_NAME%' という名前のフォルダが既に存在します。
+        exit /b 1
+    )
+    ren "%CURRENT_DIR%" "%PROJECT_NAME%"
+    cd "%PROJECT_NAME%"
+    echo フォルダ名を変更しました。
 )
 
 REM 環境名の選択
