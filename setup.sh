@@ -214,7 +214,7 @@ if [ "$RENAME_NEEDED" = true ]; then
         cd "$CURRENT_PATH"
     else
         # フォルダ名を変更
-        if mv "$RENAME_OLD_DIR" "$RENAME_NEW_DIR" 2>/dev/null; then
+        if mv "$RENAME_OLD_DIR" "$RENAME_NEW_DIR" 2>&1; then
             echo "フォルダ名を変更しました。"
             # 新しいディレクトリに移動
             cd "$RENAME_NEW_DIR"

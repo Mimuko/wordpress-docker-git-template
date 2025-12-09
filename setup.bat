@@ -18,38 +18,12 @@ if "%PROJECT_NAME%"=="" (
     echo プロジェクト名を現在のディレクトリ名（!PROJECT_NAME!）に設定しました。
 )
 
-REM フォルダ名をプロジェクト名に変更（現在の名前と異なる場合）
+REM フォルダ名をプロジェクト名に変更するフラグを設定（最後に実行）
+set RENAME_NEEDED=false
 if not "%CURRENT_DIR%"=="%PROJECT_NAME%" (
-    echo.
-    echo フォルダ名を '%CURRENT_DIR%' から '%PROJECT_NAME%' に変更します...
-    
-    REM 現在のディレクトリの絶対パスを取得
-    set "CURRENT_PATH=%CD%"
-    
-    REM 親ディレクトリのパスを取得
-    for %%I in ("%CURRENT_PATH%\..") do set "PARENT_PATH=%%~fI"
-    
-    REM 親ディレクトリに移動
-    cd /d "%PARENT_PATH%"
-    
-    REM 既に同名のフォルダが存在するか確認
-    if exist "%PROJECT_NAME%" (
-        echo エラー: '%PROJECT_NAME%' という名前のフォルダが既に存在します。
-        cd /d "%CURRENT_PATH%"
-        exit /b 1
-    )
-    
-    REM PowerShellを使用してリネーム（より確実）
-    powershell -Command "Rename-Item -Path '%CURRENT_DIR%' -NewName '%PROJECT_NAME%' -ErrorAction Stop"
-    if errorlevel 1 (
-        echo エラー: フォルダ名の変更に失敗しました。
-        cd /d "%CURRENT_PATH%"
-        exit /b 1
-    )
-    
-    REM 新しいディレクトリに移動
-    cd /d "%PARENT_PATH%\%PROJECT_NAME%"
-    echo フォルダ名を変更しました。
+    set RENAME_NEEDED=true
+    set RENAME_OLD_DIR=%CURRENT_DIR%
+    set RENAME_NEW_DIR=%PROJECT_NAME%
 )
 
 REM 環境名の選択
@@ -190,7 +164,52 @@ if exist docker-compose.yml (
     echo docker-compose.ymlを更新しました。
 )
 
-echo.
+REM フォルダ名をプロジェクト名に変更（最後に実行）
+if "%RENAME_NEEDED%"=="true" (
+    echo.
+    echo ==========================================
+    echo フォルダ名を変更します
+    echo ==========================================
+    echo.
+    echo フォルダ名を '%RENAME_OLD_DIR%' から '%RENAME_NEW_DIR%' に変更します...
+    
+    REM 現在のディレクトリの絶対パスを保存
+    set "CURRENT_PATH=%CD%"
+    
+    REM 親ディレクトリのパスを取得
+    for %%I in ("%CURRENT_PATH%\..") do set "PARENT_PATH=%%~fI"
+    
+    REM 親ディレクトリに移動
+    cd /d "%PARENT_PATH%"
+    
+    REM 既に同名のフォルダが存在するか確認
+    if exist "%RENAME_NEW_DIR%" (
+        echo 警告: '%RENAME_NEW_DIR%' という名前のフォルダが既に存在します。
+        echo フォルダ名の変更をスキップします。
+        cd /d "%CURRENT_PATH%"
+    ) else (
+        REM PowerShellを使用してリネーム（より確実）
+        powershell -Command "Rename-Item -Path '%RENAME_OLD_DIR%' -NewName '%RENAME_NEW_DIR%' -ErrorAction Stop"
+        if errorlevel 1 (
+            echo.
+            echo 警告: フォルダ名の変更に失敗しました。
+            echo 手動でフォルダ名を変更してください:
+            echo   cd ..
+            echo   ren %RENAME_OLD_DIR% %RENAME_NEW_DIR%
+            echo   cd %RENAME_NEW_DIR%
+            cd /d "%CURRENT_PATH%"
+        ) else (
+            echo フォルダ名を変更しました。
+            REM 新しいディレクトリに移動
+            cd /d "%PARENT_PATH%\%RENAME_NEW_DIR%"
+            echo.
+            echo 注意: 新しいディレクトリに移動しました。
+            echo 現在のディレクトリ: %CD%
+        )
+    )
+    echo.
+)
+
 echo ==========================================
 echo セットアップ完了！
 echo ==========================================
