@@ -3,6 +3,17 @@
 WordPressのローカル開発環境をDockerで構築し、Gitでバージョン管理を行うためのテンプレートです。  
 ポート競合の自動検出、環境別の設定切り替え、簡単セットアップスクリプトなど、開発を効率化する機能を搭載しています。
 
+## 📥 インストール
+
+このテンプレートを使用するには、GitHubからクローンしてください：
+
+```bash
+git clone https://github.com/YOUR_USERNAME/wordpress-docker-git-template.git my-project-name
+cd my-project-name
+```
+
+または、GitHubの「Use this template」ボタンを使用して新しいリポジトリを作成することもできます。
+
 ## 📋 目次
 
 - [主な機能](#主な機能)
@@ -43,46 +54,48 @@ WordPressのローカル開発環境をDockerで構築し、Gitでバージョ�
 
 ## 🚀 クイックスタート
 
-### 新規プロジェクトとして使用する場合
+### 1. リポジトリをクローン
 
-1. **テンプレートをコピー**
-   ```bash
-   cp -r wordpress-docker-git-template my-new-project
-   cd my-new-project
-   ```
+```bash
+git clone https://github.com/YOUR_USERNAME/wordpress-docker-git-template.git my-new-project
+cd my-new-project
+```
 
-2. **セットアップスクリプトを実行**
-   ```bash
-   # Git Bashの場合
-   ./setup.sh
-   
-   # Windows CMDの場合
-   setup.bat
-   ```
-   
-   スクリプトが以下を自動設定します：
-   - プロジェクト名の入力
-   - 環境選択（dev/stg/prod）
-   - ポート番号の設定
-   - `.env`ファイルの作成
-   - 各種設定ファイルの更新
+### 2. セットアップスクリプトを実行
 
-3. **コンテナを起動**
-   ```bash
-   # ポート自動検出付きで起動（推奨）
-   ./docker-compose-up.sh
-   # または
-   docker-compose-up.bat
-   
-   # 通常の起動
-   docker-compose up -d
-   ```
+```bash
+# Git Bashの場合
+./setup.sh
 
-4. **アクセス**
-   - WordPress: http://localhost:8082（設定したポート番号）
-   - phpMyAdmin: http://localhost:8083（設定したポート番号）
+# Windows CMDの場合
+setup.bat
+```
 
-### 既存プロジェクトとして使用する場合
+スクリプトが以下を自動設定します：
+- プロジェクト名の入力
+- 環境選択（dev/stg/prod）
+- **ポート番号の自動検出**（使用中のポートを自動で検索）
+- `.env`ファイルの作成
+- 各種設定ファイルの更新
+
+### 3. コンテナを起動
+
+```bash
+# ポート自動検出付きで起動（推奨）
+./docker-compose-up.sh
+# または
+docker-compose-up.bat
+
+# 通常の起動
+docker-compose up -d
+```
+
+### 4. アクセス
+
+- **WordPress**: http://localhost:8082（設定したポート番号）
+- **phpMyAdmin**: http://localhost:8083（設定したポート番号）
+
+### 手動セットアップ（スクリプトを使わない場合）
 
 1. **環境変数ファイルを作成**
    ```bash
@@ -306,6 +319,41 @@ docker-compose ps
 - [Docker Compose公式ドキュメント](https://docs.docker.com/compose/)
 - [WordPress公式ドキュメント](https://wordpress.org/support/)
 - [WP-CLI公式ドキュメント](https://wp-cli.org/)
+
+## 🔄 テンプレートとしての使い方
+
+このリポジトリをテンプレートとして使用する方法：
+
+### 方法1: GitHubの「Use this template」機能を使用
+
+1. GitHubリポジトリページで「Use this template」ボタンをクリック
+2. 新しいリポジトリ名を入力して作成
+3. 作成したリポジトリをクローン
+4. `setup.sh`（または`setup.bat`）を実行して初期設定
+
+### 方法2: 直接クローン
+
+```bash
+# テンプレートをクローン
+git clone https://github.com/YOUR_USERNAME/wordpress-docker-git-template.git my-project
+cd my-project
+
+# 既存のGit履歴を削除（新しいプロジェクトとして開始）
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit"
+
+# セットアップスクリプトを実行
+./setup.sh
+```
+
+### 方法3: フォークして使用
+
+1. このリポジトリをフォーク
+2. フォークしたリポジトリをクローン
+3. 必要に応じてカスタマイズ
+4. `setup.sh`を実行して初期設定
 
 ## 📝 ライセンス
 

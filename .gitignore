@@ -1,5 +1,19 @@
+# 環境変数ファイル（テンプレートから作成される）
+.env
 
+# WordPress関連
 wordpress/wp-content/uploads/
 wordpress/.htaccess
 wordpress/wp-config.php
 mysql/
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# IDE関連
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
