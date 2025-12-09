@@ -166,7 +166,7 @@ if not exist .env (
             echo MYSQL_USER=wordpress
             echo MYSQL_PASSWORD=wordpress
             echo MYSQL_ROOT_PASSWORD=root
-            echo DB_VOLUME_NAME=db_data_%ENV_NAME%
+            echo DB_VOLUME_NAME=%PROJECT_NAME%_db_data_%ENV_NAME%
         ) > .env
         echo .envファイルを新規作成しました。
     )
@@ -176,7 +176,7 @@ if not exist .env (
 
 REM .envファイルの更新（PowerShellを使用）
 if exist .env (
-    powershell -Command "$content = Get-Content .env; $content = $content -replace '^WORDPRESS_PORT=.*', 'WORDPRESS_PORT=%WP_PORT%'; $content = $content -replace '^PHPMYADMIN_PORT=.*', 'PHPMYADMIN_PORT=%PMA_PORT%'; $content = $content -replace '^DB_VOLUME_NAME=.*', 'DB_VOLUME_NAME=db_data_%ENV_NAME%'; Set-Content .env $content"
+    powershell -Command "$content = Get-Content .env; $content = $content -replace '^WORDPRESS_PORT=.*', 'WORDPRESS_PORT=%WP_PORT%'; $content = $content -replace '^PHPMYADMIN_PORT=.*', 'PHPMYADMIN_PORT=%PMA_PORT%'; $content = $content -replace '^DB_VOLUME_NAME=.*', 'DB_VOLUME_NAME=%PROJECT_NAME%_db_data_%ENV_NAME%'; Set-Content .env $content"
     echo .envファイルを更新しました。
 ) else (
     echo エラー: .envファイルの作成に失敗しました。
@@ -198,7 +198,7 @@ echo プロジェクト名: %PROJECT_NAME%
 echo 環境: %ENV_NAME%
 echo WordPressポート: %WP_PORT%
 echo phpMyAdminポート: %PMA_PORT%
-echo DB Volume名: db_data_%ENV_NAME%
+echo DB Volume名: %PROJECT_NAME%_db_data_%ENV_NAME%
 echo.
 echo 次のコマンドで起動できます:
 echo   docker-compose-up.bat

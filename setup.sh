@@ -143,7 +143,7 @@ MYSQL_DATABASE=wordpress
 MYSQL_USER=wordpress
 MYSQL_PASSWORD=wordpress
 MYSQL_ROOT_PASSWORD=root
-DB_VOLUME_NAME=db_data_$ENV_NAME
+DB_VOLUME_NAME=${PROJECT_NAME}_db_data_$ENV_NAME
 EOF
         echo ".envファイルを新規作成しました。"
     fi
@@ -158,12 +158,12 @@ if [ -f .env ]; then
         # macOSの場合
         sed -i '' "s/^WORDPRESS_PORT=.*/WORDPRESS_PORT=$WP_PORT/" .env
         sed -i '' "s/^PHPMYADMIN_PORT=.*/PHPMYADMIN_PORT=$PMA_PORT/" .env
-        sed -i '' "s/^DB_VOLUME_NAME=.*/DB_VOLUME_NAME=db_data_$ENV_NAME/" .env
+        sed -i '' "s/^DB_VOLUME_NAME=.*/DB_VOLUME_NAME=${PROJECT_NAME}_db_data_$ENV_NAME/" .env
     else
         # Linuxの場合
         sed -i.bak "s/^WORDPRESS_PORT=.*/WORDPRESS_PORT=$WP_PORT/" .env
         sed -i.bak "s/^PHPMYADMIN_PORT=.*/PHPMYADMIN_PORT=$PMA_PORT/" .env
-        sed -i.bak "s/^DB_VOLUME_NAME=.*/DB_VOLUME_NAME=db_data_$ENV_NAME/" .env
+        sed -i.bak "s/^DB_VOLUME_NAME=.*/DB_VOLUME_NAME=${PROJECT_NAME}_db_data_$ENV_NAME/" .env
         rm -f .env.bak
     fi
     echo ".envファイルを更新しました。"
@@ -239,7 +239,7 @@ echo "プロジェクト名: $PROJECT_NAME"
 echo "環境: $ENV_NAME"
 echo "WordPressポート: $WP_PORT"
 echo "phpMyAdminポート: $PMA_PORT"
-echo "DB Volume名: db_data_$ENV_NAME"
+echo "DB Volume名: ${PROJECT_NAME}_db_data_$ENV_NAME"
 echo ""
 echo "次のコマンドで起動できます:"
 echo "  ./docker-compose-up.sh"
