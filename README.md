@@ -40,9 +40,9 @@ cd my-project-name
 ├── docker-compose.yml          # Docker Compose設定ファイル
 ├── .env.example                # 環境変数のテンプレート
 ├── .gitignore                  # Git管理対象外の定義
-├── setup.sh / setup.bat        # 新規プロジェクト初期化スクリプト
-├── docker-compose-up.sh / .bat # ポート検出付き起動スクリプト
-├── find-free-port.sh / .bat    # ポート自動検出スクリプト
+├── setup.sh                    # 新規プロジェクト初期化スクリプト
+├── docker-compose-up.sh        # ポート検出付き起動スクリプト
+├── find-free-port.sh           # ポート自動検出スクリプト
 ├── README.md                   # このファイル
 └── wordpress/
     ├── wp-content/
@@ -64,11 +64,7 @@ cd my-new-project
 ### 2. セットアップスクリプトを実行
 
 ```bash
-# Git Bashの場合
 ./setup.sh
-
-# Windows CMDの場合
-setup.bat
 ```
 
 スクリプトが以下を自動設定します：
@@ -83,8 +79,6 @@ setup.bat
 ```bash
 # ポート自動検出付きで起動（推奨）
 ./docker-compose-up.sh
-# または
-docker-compose-up.bat
 
 # 通常の起動
 docker-compose up -d
@@ -139,8 +133,6 @@ docker-compose down -v
 ```bash
 # ポート検出付きで起動
 ./docker-compose-up.sh
-# または
-docker-compose-up.bat
 
 # ポート検出のみ実行（任意のdocker-composeコマンドを実行可能）
 ./find-free-port.sh up -d
@@ -329,7 +321,7 @@ docker-compose ps
 1. GitHubリポジトリページで「Use this template」ボタンをクリック
 2. 新しいリポジトリ名を入力して作成
 3. 作成したリポジトリをクローン
-4. `setup.sh`（または`setup.bat`）を実行して初期設定
+4. `setup.sh`を実行して初期設定
 
 ### 方法2: 直接クローン
 
