@@ -23,12 +23,28 @@ fi
 if [ "$CURRENT_DIR" != "$PROJECT_NAME" ]; then
     echo ""
     echo "フォルダ名を '$CURRENT_DIR' から '$PROJECT_NAME' に変更します..."
+    
+    # 現在のディレクトリの絶対パスを保存
+    CURRENT_PATH="$PWD"
+    
+    # 親ディレクトリに移動
     cd ..
+    
+    # 既に同名のフォルダが存在するか確認
     if [ -d "$PROJECT_NAME" ]; then
         echo "エラー: '$PROJECT_NAME' という名前のフォルダが既に存在します。"
+        cd "$CURRENT_PATH"
         exit 1
     fi
-    mv "$CURRENT_DIR" "$PROJECT_NAME"
+    
+    # フォルダ名を変更
+    if ! mv "$CURRENT_DIR" "$PROJECT_NAME" 2>/dev/null; then
+        echo "エラー: フォルダ名の変更に失敗しました。"
+        cd "$CURRENT_PATH"
+        exit 1
+    fi
+    
+    # 新しいディレクトリに移動
     cd "$PROJECT_NAME"
     echo "フォルダ名を変更しました。"
 fi

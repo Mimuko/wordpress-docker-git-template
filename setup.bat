@@ -22,13 +22,33 @@ REM フォルダ名をプロジェクト名に変更（現在の名前と異な�
 if not "%CURRENT_DIR%"=="%PROJECT_NAME%" (
     echo.
     echo フォルダ名を '%CURRENT_DIR%' から '%PROJECT_NAME%' に変更します...
-    cd ..
+    
+    REM 現在のディレクトリの絶対パスを取得
+    set "CURRENT_PATH=%CD%"
+    
+    REM 親ディレクトリのパスを取得
+    for %%I in ("%CURRENT_PATH%\..") do set "PARENT_PATH=%%~fI"
+    
+    REM 親ディレクトリに移動
+    cd /d "%PARENT_PATH%"
+    
+    REM 既に同名のフォルダが存在するか確認
     if exist "%PROJECT_NAME%" (
         echo エラー: '%PROJECT_NAME%' という名前のフォルダが既に存在します。
+        cd /d "%CURRENT_PATH%"
         exit /b 1
     )
-    ren "%CURRENT_DIR%" "%PROJECT_NAME%"
-    cd "%PROJECT_NAME%"
+    
+    REM PowerShellを使用してリネーム（より確実）
+    powershell -Command "Rename-Item -Path '%CURRENT_DIR%' -NewName '%PROJECT_NAME%' -ErrorAction Stop"
+    if errorlevel 1 (
+        echo エラー: フォルダ名の変更に失敗しました。
+        cd /d "%CURRENT_PATH%"
+        exit /b 1
+    )
+    
+    REM 新しいディレクトリに移動
+    cd /d "%PARENT_PATH%\%PROJECT_NAME%"
     echo フォルダ名を変更しました。
 )
 
