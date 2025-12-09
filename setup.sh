@@ -19,34 +19,12 @@ if [ -z "$PROJECT_NAME" ]; then
     echo "プロジェクト名を現在のディレクトリ名（$PROJECT_NAME）に設定しました。"
 fi
 
-# フォルダ名をプロジェクト名に変更（現在の名前と異なる場合）
+# フォルダ名をプロジェクト名に変更するフラグを設定（最後に実行）
+RENAME_NEEDED=false
 if [ "$CURRENT_DIR" != "$PROJECT_NAME" ]; then
-    echo ""
-    echo "フォルダ名を '$CURRENT_DIR' から '$PROJECT_NAME' に変更します..."
-    
-    # 現在のディレクトリの絶対パスを保存
-    CURRENT_PATH="$PWD"
-    
-    # 親ディレクトリに移動
-    cd ..
-    
-    # 既に同名のフォルダが存在するか確認
-    if [ -d "$PROJECT_NAME" ]; then
-        echo "エラー: '$PROJECT_NAME' という名前のフォルダが既に存在します。"
-        cd "$CURRENT_PATH"
-        exit 1
-    fi
-    
-    # フォルダ名を変更
-    if ! mv "$CURRENT_DIR" "$PROJECT_NAME" 2>/dev/null; then
-        echo "エラー: フォルダ名の変更に失敗しました。"
-        cd "$CURRENT_PATH"
-        exit 1
-    fi
-    
-    # 新しいディレクトリに移動
-    cd "$PROJECT_NAME"
-    echo "フォルダ名を変更しました。"
+    RENAME_NEEDED=true
+    RENAME_OLD_DIR="$CURRENT_DIR"
+    RENAME_NEW_DIR="$PROJECT_NAME"
 fi
 
 # 環境名の選択
@@ -210,7 +188,49 @@ if [ -f wordpress/wp-config.php ]; then
     echo "wp-config.phpを更新しました。"
 fi
 
-echo ""
+# フォルダ名をプロジェクト名に変更（最後に実行）
+if [ "$RENAME_NEEDED" = true ]; then
+    echo ""
+    echo "=========================================="
+    echo "フォルダ名を変更します"
+    echo "=========================================="
+    echo ""
+    echo "フォルダ名を '$RENAME_OLD_DIR' から '$RENAME_NEW_DIR' に変更します..."
+    
+    # 現在のディレクトリの絶対パスを保存
+    CURRENT_PATH="$PWD"
+    PARENT_PATH=$(dirname "$CURRENT_PATH")
+    
+    # 親ディレクトリに移動
+    cd "$PARENT_PATH"
+    
+    # 既に同名のフォルダが存在するか確認
+    if [ -d "$RENAME_NEW_DIR" ]; then
+        echo "警告: '$RENAME_NEW_DIR' という名前のフォルダが既に存在します。"
+        echo "フォルダ名の変更をスキップします。"
+        cd "$CURRENT_PATH"
+    else
+        # フォルダ名を変更
+        if mv "$RENAME_OLD_DIR" "$RENAME_NEW_DIR" 2>/dev/null; then
+            echo "フォルダ名を変更しました。"
+            # 新しいディレクトリに移動
+            cd "$RENAME_NEW_DIR"
+            echo ""
+            echo "注意: 新しいディレクトリに移動しました。"
+            echo "現在のディレクトリ: $(pwd)"
+        else
+            echo ""
+            echo "警告: フォルダ名の変更に失敗しました。"
+            echo "手動でフォルダ名を変更してください:"
+            echo "  cd .."
+            echo "  mv $RENAME_OLD_DIR $RENAME_NEW_DIR"
+            echo "  cd $RENAME_NEW_DIR"
+            cd "$CURRENT_PATH"
+        fi
+    fi
+    echo ""
+fi
+
 echo "=========================================="
 echo "セットアップ完了！"
 echo "=========================================="
